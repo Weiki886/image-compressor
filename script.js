@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 创建移动设备专用的图片查看器，提供清晰的保存指引
-    function createMobileImageViewer(dataUrl, fileName) {
+    function createMobileImageViewer(dataUrl, fileName, fromGallery = false) {
         // 创建覆盖层
         const overlay = document.createElement('div');
         overlay.style.position = 'fixed';
@@ -412,6 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buttonsContainer.style.alignItems = 'center';
         buttonsContainer.style.marginTop = '15px';
         buttonsContainer.style.gap = '10px';
+        buttonsContainer.style.width = '100%';
         
         // 添加关闭按钮
         const closeButton = document.createElement('button');
@@ -423,6 +424,31 @@ document.addEventListener('DOMContentLoaded', () => {
         closeButton.style.borderRadius = '4px';
         closeButton.style.cursor = 'pointer';
         closeButton.style.fontWeight = 'bold';
+        closeButton.style.width = '100%';
+        closeButton.style.maxWidth = '250px';
+        
+        // 如果是从图库来的，添加返回按钮
+        if (fromGallery) {
+            const backButton = document.createElement('button');
+            backButton.textContent = '返回图片列表';
+            backButton.style.padding = '12px 24px';
+            backButton.style.backgroundColor = '#607D8B';
+            backButton.style.color = 'white';
+            backButton.style.border = 'none';
+            backButton.style.borderRadius = '4px';
+            backButton.style.cursor = 'pointer';
+            backButton.style.fontWeight = 'bold';
+            backButton.style.marginBottom = '10px';
+            backButton.style.width = '100%';
+            backButton.style.maxWidth = '250px';
+            
+            backButton.addEventListener('click', function() {
+                document.body.removeChild(overlay);
+                createMobileGalleryViewer(compressedImages);
+            });
+            
+            buttonsContainer.appendChild(backButton);
+        }
         
         // 尝试添加分享按钮（如果浏览器支持）
         if (navigator.share) {
@@ -436,6 +462,8 @@ document.addEventListener('DOMContentLoaded', () => {
             shareButton.style.cursor = 'pointer';
             shareButton.style.fontWeight = 'bold';
             shareButton.style.marginBottom = '10px';
+            shareButton.style.width = '100%';
+            shareButton.style.maxWidth = '250px';
             
             shareButton.addEventListener('click', async () => {
                 try {
@@ -605,7 +633,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 添加点击事件
             thumbnailContainer.addEventListener('click', () => {
-                createMobileImageViewer(img.dataUrl, compressedFileName);
+                document.body.removeChild(overlay);
+                createMobileImageViewer(img.dataUrl, compressedFileName, true);
             });
             
             // 组装缩略图
