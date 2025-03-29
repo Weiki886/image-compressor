@@ -320,7 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isMobile) {
             // 显示全屏图片预览，带清晰的保存说明
-            createMobileImageViewer(compressedImage.dataUrl, compressedFileName);
+            // 第三个参数表示这是从主界面打开的单张图片，而不是从图库
+            createMobileImageViewer(compressedImage.dataUrl, compressedFileName, false, true);
         } else {
             // 桌面设备处理方法 - 保持原有的下载方式
             const downloadLink = document.createElement('a');
@@ -333,9 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 创建移动设备专用的图片查看器，提供清晰的保存指引
-    function createMobileImageViewer(dataUrl, fileName, fromGallery = false) {
+    function createMobileImageViewer(dataUrl, fileName, fromGallery = false, fromPreview = false) {
+        // 移除可能存在的其他覆盖层，避免界面堆叠
+        const existingOverlays = document.querySelectorAll('div[data-viewer-overlay="true"]');
+        existingOverlays.forEach(overlay => document.body.removeChild(overlay));
+        
         // 创建覆盖层
         const overlay = document.createElement('div');
+        overlay.setAttribute('data-viewer-overlay', 'true');
         overlay.style.position = 'fixed';
         overlay.style.top = '0';
         overlay.style.left = '0';
@@ -350,10 +356,20 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.style.padding = '20px';
         overlay.style.boxSizing = 'border-box';
         
+        // 创建标题
+        const titleEl = document.createElement('div');
+        titleEl.textContent = '图片预览';
+        titleEl.style.color = 'white';
+        titleEl.style.fontSize = '18px';
+        titleEl.style.fontWeight = 'bold';
+        titleEl.style.marginBottom = '15px';
+        titleEl.style.width = '100%';
+        titleEl.style.textAlign = 'center';
+        
         // 创建图片容器
         const imgContainer = document.createElement('div');
         imgContainer.style.width = '100%';
-        imgContainer.style.height = '70%';
+        imgContainer.style.height = '60%';
         imgContainer.style.display = 'flex';
         imgContainer.style.alignItems = 'center';
         imgContainer.style.justifyContent = 'center';
@@ -366,6 +382,8 @@ document.addEventListener('DOMContentLoaded', () => {
         img.style.maxHeight = '100%';
         img.style.objectFit = 'contain';
         img.alt = fileName;
+        img.style.borderRadius = '4px';
+        img.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
         
         // 检测设备类型
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -375,12 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const instructionsEl = document.createElement('div');
         instructionsEl.style.color = 'white';
         instructionsEl.style.textAlign = 'center';
-        instructionsEl.style.margin = '15px';
+        instructionsEl.style.margin = '10px 0';
         instructionsEl.style.fontSize = '16px';
         instructionsEl.style.padding = '10px';
         instructionsEl.style.backgroundColor = 'rgba(0,0,0,0.5)';
         instructionsEl.style.borderRadius = '5px';
         instructionsEl.style.maxWidth = '90%';
+        instructionsEl.style.width = '100%';
         
         // 根据设备类型显示不同的保存指南
         if (isIOS) {
@@ -405,6 +424,38 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
         
+        // 阻止图片上的默认事件，避免触发浏览器的默认保存行为
+        img.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            // 显示自定义提示
+            const tooltip = document.createElement('div');
+            tooltip.textContent = '长按图片进行保存';
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            tooltip.style.color = 'white';
+            tooltip.style.padding = '8px 12px';
+            tooltip.style.borderRadius = '4px';
+            tooltip.style.fontSize = '14px';
+            tooltip.style.top = `${e.clientY}px`;
+            tooltip.style.left = `${e.clientX}px`;
+            tooltip.style.zIndex = '10001';
+            document.body.appendChild(tooltip);
+            
+            setTimeout(() => {
+                document.body.removeChild(tooltip);
+            }, 1500);
+        });
+        
+        // 如果是Safari或iOS上的浏览器，添加特殊说明
+        if (isIOS) {
+            const safariNote = document.createElement('p');
+            safariNote.textContent = '提示：如果长按不起作用，请先轻点图片一下，再长按尝试';
+            safariNote.style.color = '#FFC107';
+            safariNote.style.fontSize = '14px';
+            safariNote.style.margin = '5px 0';
+            instructionsEl.appendChild(safariNote);
+        }
+        
         // 创建按钮区域
         const buttonsContainer = document.createElement('div');
         buttonsContainer.style.display = 'flex';
@@ -413,25 +464,13 @@ document.addEventListener('DOMContentLoaded', () => {
         buttonsContainer.style.marginTop = '15px';
         buttonsContainer.style.gap = '10px';
         buttonsContainer.style.width = '100%';
-        
-        // 添加关闭按钮
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '关闭预览';
-        closeButton.style.padding = '12px 24px';
-        closeButton.style.backgroundColor = '#4CAF50';
-        closeButton.style.color = 'white';
-        closeButton.style.border = 'none';
-        closeButton.style.borderRadius = '4px';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.fontWeight = 'bold';
-        closeButton.style.width = '100%';
-        closeButton.style.maxWidth = '250px';
+        buttonsContainer.style.maxWidth = '250px';
         
         // 如果是从图库来的，添加返回按钮
         if (fromGallery) {
             const backButton = document.createElement('button');
             backButton.textContent = '返回图片列表';
-            backButton.style.padding = '12px 24px';
+            backButton.style.padding = '12px 0';
             backButton.style.backgroundColor = '#607D8B';
             backButton.style.color = 'white';
             backButton.style.border = 'none';
@@ -440,7 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
             backButton.style.fontWeight = 'bold';
             backButton.style.marginBottom = '10px';
             backButton.style.width = '100%';
-            backButton.style.maxWidth = '250px';
             
             backButton.addEventListener('click', function() {
                 document.body.removeChild(overlay);
@@ -454,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navigator.share) {
             const shareButton = document.createElement('button');
             shareButton.textContent = '分享图片';
-            shareButton.style.padding = '12px 24px';
+            shareButton.style.padding = '12px 0';
             shareButton.style.backgroundColor = '#2196F3';
             shareButton.style.color = 'white';
             shareButton.style.border = 'none';
@@ -463,7 +501,6 @@ document.addEventListener('DOMContentLoaded', () => {
             shareButton.style.fontWeight = 'bold';
             shareButton.style.marginBottom = '10px';
             shareButton.style.width = '100%';
-            shareButton.style.maxWidth = '250px';
             
             shareButton.addEventListener('click', async () => {
                 try {
@@ -492,23 +529,64 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonsContainer.appendChild(shareButton);
         }
         
-        // 如果是Safari或iOS上的浏览器，添加特殊说明
-        if (isIOS) {
-            const safariNote = document.createElement('p');
-            safariNote.textContent = '提示：如果长按不起作用，请先轻点图片一下，再长按尝试';
-            safariNote.style.color = '#FFC107';
-            safariNote.style.fontSize = '14px';
-            safariNote.style.margin = '5px 0';
-            instructionsEl.appendChild(safariNote);
-        }
+        // 添加保存按钮，为不支持长按保存的设备提供替代方案
+        const saveButtonLabel = isIOS ? '保存到相册' : '保存图片';
+        const saveButton = document.createElement('button');
+        saveButton.textContent = saveButtonLabel;
+        saveButton.style.padding = '12px 0';
+        saveButton.style.backgroundColor = '#4CAF50';
+        saveButton.style.color = 'white';
+        saveButton.style.border = 'none';
+        saveButton.style.borderRadius = '4px';
+        saveButton.style.cursor = 'pointer';
+        saveButton.style.fontWeight = 'bold';
+        saveButton.style.marginBottom = '10px';
+        saveButton.style.width = '100%';
         
-        // 添加事件监听
+        saveButton.addEventListener('click', function() {
+            // 对于无法直接保存的情况，打开新窗口
+            window.open(dataUrl, '_blank');
+            
+            const saveConfirm = document.createElement('div');
+            saveConfirm.style.position = 'fixed';
+            saveConfirm.style.top = '50%';
+            saveConfirm.style.left = '50%';
+            saveConfirm.style.transform = 'translate(-50%, -50%)';
+            saveConfirm.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            saveConfirm.style.color = 'white';
+            saveConfirm.style.padding = '15px';
+            saveConfirm.style.borderRadius = '8px';
+            saveConfirm.style.textAlign = 'center';
+            saveConfirm.style.zIndex = '10002';
+            saveConfirm.textContent = '新窗口中长按图片可保存';
+            
+            document.body.appendChild(saveConfirm);
+            setTimeout(() => {
+                document.body.removeChild(saveConfirm);
+            }, 3000);
+        });
+        
+        buttonsContainer.appendChild(saveButton);
+        
+        // 添加关闭按钮
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '关闭预览';
+        closeButton.style.padding = '12px 0';
+        closeButton.style.backgroundColor = '#F44336';
+        closeButton.style.color = 'white';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '4px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.fontWeight = 'bold';
+        closeButton.style.width = '100%';
+        
         closeButton.addEventListener('click', function() {
             document.body.removeChild(overlay);
         });
         
         // 组装UI元素
         imgContainer.appendChild(img);
+        overlay.appendChild(titleEl);
         overlay.appendChild(imgContainer);
         overlay.appendChild(instructionsEl);
         buttonsContainer.appendChild(closeButton);
@@ -556,8 +634,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function createMobileGalleryViewer(images) {
         if (images.length === 0) return;
         
+        // 移除可能存在的其他覆盖层，避免界面堆叠
+        const existingOverlays = document.querySelectorAll('div[data-viewer-overlay="true"]');
+        existingOverlays.forEach(overlay => document.body.removeChild(overlay));
+        
         // 创建覆盖层
         const overlay = document.createElement('div');
+        overlay.setAttribute('data-viewer-overlay', 'true');
         overlay.style.position = 'fixed';
         overlay.style.top = '0';
         overlay.style.left = '0';
