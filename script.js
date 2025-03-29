@@ -492,47 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonsContainer.appendChild(backButton);
         }
         
-        // 添加保存按钮，为不支持长按保存的设备提供替代方案
-        const saveButtonLabel = isIOS ? '保存到相册' : '保存图片';
-        const saveButton = document.createElement('button');
-        saveButton.textContent = saveButtonLabel;
-        saveButton.style.padding = '10px 0';
-        saveButton.style.backgroundColor = '#4CAF50';
-        saveButton.style.color = 'white';
-        saveButton.style.border = 'none';
-        saveButton.style.borderRadius = '4px';
-        saveButton.style.cursor = 'pointer';
-        saveButton.style.fontWeight = 'bold';
-        saveButton.style.marginBottom = '8px';
-        saveButton.style.width = '100%';
-        saveButton.style.fontSize = '15px';
-        saveButton.style.letterSpacing = '-0.5px';
-        
-        saveButton.addEventListener('click', function() {
-            // 对于无法直接保存的情况，打开新窗口
-            window.open(dataUrl, '_blank');
-            
-            const saveConfirm = document.createElement('div');
-            saveConfirm.style.position = 'fixed';
-            saveConfirm.style.top = '50%';
-            saveConfirm.style.left = '50%';
-            saveConfirm.style.transform = 'translate(-50%, -50%)';
-            saveConfirm.style.backgroundColor = 'rgba(0,0,0,0.8)';
-            saveConfirm.style.color = 'white';
-            saveConfirm.style.padding = '15px';
-            saveConfirm.style.borderRadius = '8px';
-            saveConfirm.style.textAlign = 'center';
-            saveConfirm.style.zIndex = '10002';
-            saveConfirm.textContent = '新窗口中长按图片可保存';
-            
-            document.body.appendChild(saveConfirm);
-            setTimeout(() => {
-                document.body.removeChild(saveConfirm);
-            }, 3000);
-        });
-        
-        buttonsContainer.appendChild(saveButton);
-        
         // 添加关闭按钮
         const closeButton = document.createElement('button');
         closeButton.textContent = '关闭预览';
