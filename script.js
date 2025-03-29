@@ -488,47 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonsContainer.appendChild(backButton);
         }
         
-        // 尝试添加分享按钮（如果浏览器支持）
-        if (navigator.share) {
-            const shareButton = document.createElement('button');
-            shareButton.textContent = '分享图片';
-            shareButton.style.padding = '12px 0';
-            shareButton.style.backgroundColor = '#2196F3';
-            shareButton.style.color = 'white';
-            shareButton.style.border = 'none';
-            shareButton.style.borderRadius = '4px';
-            shareButton.style.cursor = 'pointer';
-            shareButton.style.fontWeight = 'bold';
-            shareButton.style.marginBottom = '10px';
-            shareButton.style.width = '100%';
-            
-            shareButton.addEventListener('click', async () => {
-                try {
-                    const blob = dataURLtoBlob(dataUrl);
-                    const file = new File([blob], fileName, { type: blob.type });
-                    
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            files: [file],
-                            title: '压缩后的图片',
-                            text: '图片已压缩'
-                        });
-                    } else {
-                        await navigator.share({
-                            title: '压缩后的图片',
-                            text: '请长按图片保存',
-                            url: dataUrl
-                        });
-                    }
-                } catch (error) {
-                    console.error('分享失败:', error);
-                    alert('分享失败，请长按图片保存');
-                }
-            });
-            
-            buttonsContainer.appendChild(shareButton);
-        }
-        
         // 添加保存按钮，为不支持长按保存的设备提供替代方案
         const saveButtonLabel = isIOS ? '保存到相册' : '保存图片';
         const saveButton = document.createElement('button');
