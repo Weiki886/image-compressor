@@ -393,34 +393,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const instructionsEl = document.createElement('div');
         instructionsEl.style.color = 'white';
         instructionsEl.style.textAlign = 'center';
-        instructionsEl.style.margin = '10px 0';
-        instructionsEl.style.fontSize = '16px';
-        instructionsEl.style.padding = '10px';
+        instructionsEl.style.margin = '5px 0';
+        instructionsEl.style.fontSize = '14px';
+        instructionsEl.style.padding = '8px';
         instructionsEl.style.backgroundColor = 'rgba(0,0,0,0.5)';
         instructionsEl.style.borderRadius = '5px';
-        instructionsEl.style.maxWidth = '90%';
+        instructionsEl.style.maxWidth = '95%';
         instructionsEl.style.width = '100%';
+        instructionsEl.style.letterSpacing = '-0.5px';
         
         // 根据设备类型显示不同的保存指南
         if (isIOS) {
             instructionsEl.innerHTML = `
-                <p><strong>保存图片到您的设备</strong></p>
-                <p>1. 点击并按住图片</p>
-                <p>2. 在弹出菜单中选择"添加到照片"</p>
-                <p>3. 图片将保存到您的相册中</p>
+                <p style="margin:4px 0"><strong>保存图片到您的设备</strong></p>
+                <p style="margin:3px 0">1. 点击并按住图片</p>
+                <p style="margin:3px 0">2. 在弹出菜单中选择"添加到照片"</p>
+                <p style="margin:3px 0">3. 图片将保存到您的相册中</p>
             `;
         } else if (isAndroid) {
             instructionsEl.innerHTML = `
-                <p><strong>保存图片到您的设备</strong></p>
-                <p>1. 点击并按住图片</p>
-                <p>2. 在弹出菜单中选择"下载图片"或"保存图片"</p>
-                <p>3. 图片将保存到您的设备上</p>
+                <p style="margin:4px 0"><strong>保存图片到您的设备</strong></p>
+                <p style="margin:3px 0">1. 点击并按住图片</p>
+                <p style="margin:3px 0">2. 在弹出菜单中选择"下载图片"或"保存图片"</p>
+                <p style="margin:3px 0">3. 图片将保存到您的设备上</p>
             `;
         } else {
             instructionsEl.innerHTML = `
-                <p><strong>保存图片到您的设备</strong></p>
-                <p>1. 长按图片</p>
-                <p>2. 从菜单中选择保存选项</p>
+                <p style="margin:4px 0"><strong>保存图片到您的设备</strong></p>
+                <p style="margin:3px 0">1. 长按图片</p>
+                <p style="margin:3px 0">2. 从菜单中选择保存选项</p>
             `;
         }
         
@@ -449,10 +450,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // 如果是Safari或iOS上的浏览器，添加特殊说明
         if (isIOS) {
             const safariNote = document.createElement('p');
-            safariNote.textContent = '提示：如果长按不起作用，请先轻点图片一下，再长按尝试';
+            safariNote.textContent = '提示：如果长按不起作用，请先点击图片再尝试';
             safariNote.style.color = '#FFC107';
-            safariNote.style.fontSize = '14px';
-            safariNote.style.margin = '5px 0';
+            safariNote.style.fontSize = '12px';
+            safariNote.style.margin = '3px 0';
+            safariNote.style.letterSpacing = '-0.5px';
             instructionsEl.appendChild(safariNote);
         }
         
@@ -461,24 +463,26 @@ document.addEventListener('DOMContentLoaded', () => {
         buttonsContainer.style.display = 'flex';
         buttonsContainer.style.flexDirection = 'column';
         buttonsContainer.style.alignItems = 'center';
-        buttonsContainer.style.marginTop = '15px';
-        buttonsContainer.style.gap = '10px';
+        buttonsContainer.style.marginTop = '10px';
+        buttonsContainer.style.gap = '8px';
         buttonsContainer.style.width = '100%';
-        buttonsContainer.style.maxWidth = '250px';
+        buttonsContainer.style.maxWidth = '280px';
         
         // 如果是从图库来的，添加返回按钮
         if (fromGallery) {
             const backButton = document.createElement('button');
             backButton.textContent = '返回图片列表';
-            backButton.style.padding = '12px 0';
+            backButton.style.padding = '10px 0';
             backButton.style.backgroundColor = '#607D8B';
             backButton.style.color = 'white';
             backButton.style.border = 'none';
             backButton.style.borderRadius = '4px';
             backButton.style.cursor = 'pointer';
             backButton.style.fontWeight = 'bold';
-            backButton.style.marginBottom = '10px';
+            backButton.style.marginBottom = '8px';
             backButton.style.width = '100%';
+            backButton.style.fontSize = '15px';
+            backButton.style.letterSpacing = '-0.5px';
             
             backButton.addEventListener('click', function() {
                 document.body.removeChild(overlay);
@@ -492,15 +496,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const saveButtonLabel = isIOS ? '保存到相册' : '保存图片';
         const saveButton = document.createElement('button');
         saveButton.textContent = saveButtonLabel;
-        saveButton.style.padding = '12px 0';
+        saveButton.style.padding = '10px 0';
         saveButton.style.backgroundColor = '#4CAF50';
         saveButton.style.color = 'white';
         saveButton.style.border = 'none';
         saveButton.style.borderRadius = '4px';
         saveButton.style.cursor = 'pointer';
         saveButton.style.fontWeight = 'bold';
-        saveButton.style.marginBottom = '10px';
+        saveButton.style.marginBottom = '8px';
         saveButton.style.width = '100%';
+        saveButton.style.fontSize = '15px';
+        saveButton.style.letterSpacing = '-0.5px';
         
         saveButton.addEventListener('click', function() {
             // 对于无法直接保存的情况，打开新窗口
@@ -530,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 添加关闭按钮
         const closeButton = document.createElement('button');
         closeButton.textContent = '关闭预览';
-        closeButton.style.padding = '12px 0';
+        closeButton.style.padding = '10px 0';
         closeButton.style.backgroundColor = '#F44336';
         closeButton.style.color = 'white';
         closeButton.style.border = 'none';
@@ -538,6 +544,8 @@ document.addEventListener('DOMContentLoaded', () => {
         closeButton.style.cursor = 'pointer';
         closeButton.style.fontWeight = 'bold';
         closeButton.style.width = '100%';
+        closeButton.style.fontSize = '15px';
+        closeButton.style.letterSpacing = '-0.5px';
         
         closeButton.addEventListener('click', function() {
             document.body.removeChild(overlay);
