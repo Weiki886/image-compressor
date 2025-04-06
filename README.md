@@ -115,6 +115,12 @@
 
 本工具完全在您的浏览器中运行，所有图片处理操作均在本地完成，不会上传到任何服务器，确保您的图片信息安全。
 
+## 许可证
+
+本项目采用 MIT 许可证。这意味着您可以自由地使用、修改和分发此代码，无论是用于个人还是商业目的，前提是保留原始许可证和版权声明。
+
+详细信息请参阅 [LICENSE](LICENSE) 文件。
+
 ---
 
 # Image Compressor
@@ -232,4 +238,10 @@ This project is built with pure native front-end technologies:
 
 ## Privacy Statement
 
-This tool runs entirely in your browser. All image processing operations are performed locally, and your images are never uploaded to any server, ensuring the security of your image data. 
+This tool runs entirely in your browser. All image processing operations are performed locally, and your images are never uploaded to any server, ensuring the security of your image data.
+
+## License
+
+This project is licensed under the MIT License. This means you are free to use, modify, and distribute this code for personal or commercial purposes as long as you include the original license and copyright notice.
+
+See the [LICENSE](LICENSE) file for details. 
